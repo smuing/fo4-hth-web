@@ -12,7 +12,8 @@ function search() {
     searchBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>검색`;
 
     fetch("https://fo4-hth-api.herokuapp.com/search?first=ㅁ&second=ㅁㅁ", {
-        method: 'GET'
+        method: 'GET',
+        mode: 'no-cors'
     }).then(response => response.json()).then(result=>console.log(result))
     // fetch(`${apiUrl}/users?nickname=${firstTeamInput}`, {
     //     method: 'GET',
