@@ -11,7 +11,7 @@ function search() {
     searchBtn.setAttribute("disabled", true);
     searchBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>검색`;
 
-    fetch("https://fo4-hth-api.herokuapp.com/search?first=ㅁ&second=ㅁㅁ", {
+    fetch("https://fo4-hth-api.herokuapp.com/search?first=런던토종닭&second=마네는귀요미", {
         method: 'GET',
         mode: 'no-cors'
     }).then(response => response.json()).then(result=>console.log(result))
