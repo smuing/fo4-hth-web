@@ -1,0 +1,12 @@
+.form {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+.form > span {
+    margin: 0 10px;
+}
+#search-btn {
+    width: 200px;
+    margin-left: 10px;
+}
