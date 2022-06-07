@@ -14,7 +14,7 @@ function search() {
     fetch("https://fo4-hth-api.herokuapp.com/search?first=런던토종닭&second=마네는귀요미", {
         method: 'GET',
         mode: 'no-cors'
-    }).then(response => response.json()).then(result=>console.log(result))
+    }).then(response => console.log(response))
     // fetch(`${apiUrl}/users?nickname=${firstTeamInput}`, {
     //     method: 'GET',
     //     headers: { 'Authorization': apiKey },
