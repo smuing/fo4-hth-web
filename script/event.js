@@ -22,9 +22,12 @@ function menu() {
 }
 
 lastSearchContainer.addEventListener("click", () => {
-  firstInput.value = lastSearch.first;
-  secondInput.value = lastSearch.second;
-  menu();
+  if (lastSearch !== null) {
+    firstInput.value = lastSearch.first;
+    secondInput.value = lastSearch.second;
+    menu();
+    search();
+  }
 });
 
 function dateFormat(date) {
