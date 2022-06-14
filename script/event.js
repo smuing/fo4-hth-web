@@ -1,4 +1,5 @@
 const menuContainer = document.getElementById("menu-container");
+const menuBackground = document.getElementById("menu-background");
 const lastSearchContainer = document.getElementById("last-search");
 let lastSearch = JSON.parse(localStorage.getItem("fo4_hth_last_search"));
 const firstInput = document.getElementById("first-input");
@@ -19,15 +20,13 @@ window.onload = () => {
 
 function menu() {
   menuContainer.classList.toggle("active");
+  menuBackground.classList.toggle("active");
 }
 
 lastSearchContainer.addEventListener("click", () => {
-  if (lastSearch !== null) {
-    firstInput.value = lastSearch.first;
-    secondInput.value = lastSearch.second;
-    menu();
-    search();
-  }
+  firstInput.value = lastSearch.first;
+  secondInput.value = lastSearch.second;
+  menu();
 });
 
 function dateFormat(date) {
