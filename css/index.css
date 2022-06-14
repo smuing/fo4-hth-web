@@ -1,7 +1,3 @@
-body {
-  user-select: none;
-}
-
 .wrapper {
   position: relative;
   max-width: 480px;
@@ -18,7 +14,7 @@ body {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 2fr 1.5fr 2fr;
 }
 
 header {
@@ -51,8 +47,8 @@ header i {
 }
 
 #results .date {
-  font-size: x-small;
   color: #6c757d;
+  font-size: 12px;
 }
 #results p {
   margin: 0;
@@ -65,8 +61,8 @@ header i {
   margin: 0;
 }
 #results .shoot-out {
+  display: block;
   text-align: center;
-  font-size: 0.8vw;
 }
 .result .item:nth-child(1) {
   text-align: right;
@@ -76,6 +72,9 @@ header i {
 }
 .result .item:nth-child(3) {
   text-align: left;
+}
+.result .win {
+  font-weight: bold;
 }
 
 footer {
@@ -118,7 +117,6 @@ footer {
   align-items: center;
 }
 #menu-header span {
-  font-size: 20px;
   font-weight: bold;
 }
 #menu-header i {
