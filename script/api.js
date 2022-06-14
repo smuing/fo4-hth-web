@@ -4,7 +4,7 @@ const searchBtn = document.getElementById("search-btn");
 const totalContainer = document.getElementById("total");
 const resultsContainer = document.getElementById("results");
 
-searchBtn.addEventListener("click", () => {
+function search() {
   const firstInputValue = firstInput.value;
   const secondInputValue = secondInput.value;
 
@@ -104,4 +104,8 @@ searchBtn.addEventListener("click", () => {
         secondInput.value = "";
       });
   }
+}
+
+searchBtn.addEventListener("click", () => {
+  search();
 });
