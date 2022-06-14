@@ -1,3 +1,7 @@
+body {
+  user-select: none;
+}
+
 .wrapper {
   position: relative;
   max-width: 480px;
