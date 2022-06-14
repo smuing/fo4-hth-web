@@ -129,3 +129,57 @@ footer {
 #last-search {
   cursor: pointer;
 }
+
+@media only screen and (max-width: 1024px) {
+  .wrapper {
+    max-width: 1024px;
+  }
+}
+@media only screen and (max-width: 400px) {
+  .card-title span, .result .nickname {
+    font-size: 14px;
+  }
+  .card-title small {
+    font-size: 12px;
+  }
+  #total .count small {
+    font-size: 12px;
+  }
+}
+@media only screen and (max-width: 352px) {
+  .card-title span, .result .nickname {
+    font-size: 12px;
+  }
+  .card-title small {
+    font-size: 10px;
+  }
+  #total .count small {
+    font-size: 10px;
+  }
+  #results .date {
+    font-size: 10px;
+  }
+  #results .shoot-out {
+    font-size: 12px;
+  }
+}
+@media only screen and (max-width: 290px) {
+  .card-title span, .result .nickname {
+    font-size: 10px;
+  }
+  .card-title small {
+    font-size: 10px;
+  }
+  #total .count small {
+    font-size: 10px;
+  }
+  #results .date {
+    font-size: 10px;
+  }
+  #results .shoot-out {
+    font-size: 10px;
+  }
+  .result h4 {
+    font-size: 16px;
+  }
+}
