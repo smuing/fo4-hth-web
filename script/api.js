@@ -91,7 +91,7 @@ function search() {
                   </div>
                 ${
                   match.shootOut
-                    ? `<p class="shoot-out">(Pen ${match.firstShootOutGoal} - ${match.secondShootOutGoal})</p>`
+                    ? `<small class="shoot-out">(Pen ${match.firstShootOutGoal} - ${match.secondShootOutGoal})</small>`
                     : ``
                 }
               </button>
