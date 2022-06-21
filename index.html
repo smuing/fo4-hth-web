@@ -32,11 +32,37 @@
         <input
           type="text"
           id="second-input"
-          class="form-control mb-3"
+          class="form-control mb-2"
           placeholder="구단주명"
         />
-        <button id="search-btn" class="btn btn-primary" type="button">
+        <a
+          class="search-setting-btn"
+          data-bs-toggle="collapse"
+          href="#collapseExample"
+          role="button"
+          aria-expanded="false"
+          aria-controls="collapseExample"
+        >
+          검색 설정
+        </a>
+        <div style="width: 100%" class="collapse" id="collapseExample">
+          <div class="card card-body">
+            검색할 경기 수
+            <input
+              type="number"
+              id="limit-input"
+              class="form-control"
+              value="30"
+              min="1"
+              max="100"
+            />
+          </div>
+        </div>
+        <button id="search-btn" class="btn btn-primary mt-3" type="button">
           검색
+        </button>
+        <button id="cancel-btn" class="btn btn-danger mt-2" type="button">
+          취소
         </button>
       </div>
 
@@ -45,8 +71,11 @@
         <div id="results" class="list-group"></div>
       </div>
 
-      <footer class="container mb-2">
-        <span>Data based on <br> NEXON DEVELOPERS</span>
+      <footer class="mb-2">
+        <span
+          >Data based on <br />
+          NEXON DEVELOPERS</span
+        >
       </footer>
 
       <div id="menu-background"></div>

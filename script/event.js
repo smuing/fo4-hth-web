@@ -1,9 +1,11 @@
+const wrapperContainer = document.querySelector(".wrapper");
 const menuContainer = document.getElementById("menu-container");
 const menuBackground = document.getElementById("menu-background");
 const lastSearchContainer = document.getElementById("last-search");
 let lastSearch = JSON.parse(localStorage.getItem("fo4_hth_last_search"));
 const firstInput = document.getElementById("first-input");
 const secondInput = document.getElementById("second-input");
+const limitInput = document.getElementById("limit-input");
 
 function setLastSearch() {
   lastSearch = JSON.parse(localStorage.getItem("fo4_hth_last_search"));
@@ -21,6 +23,8 @@ window.onload = () => {
 function menu() {
   menuContainer.classList.toggle("active");
   menuBackground.classList.toggle("active");
+  wrapperContainer.scrollTo({ top: 0, behavior: "smooth" });
+  wrapperContainer.classList.toggle("active");
 }
 
 lastSearchContainer.addEventListener("click", () => {

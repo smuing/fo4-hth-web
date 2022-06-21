@@ -1,23 +1,40 @@
-const API_URL = "https://fo4-hth-api.herokuapp.com";
+// const API_URL = "https://fo4-hth-api.herokuapp.com";
+const API_URL = "http://localhost:3000";
 
 const searchBtn = document.getElementById("search-btn");
+const cancelBtn = document.getElementById("cancel-btn");
 const totalContainer = document.getElementById("total");
 const resultsContainer = document.getElementById("results");
 
 function search() {
   const firstInputValue = firstInput.value;
   const secondInputValue = secondInput.value;
+  const limitInputValue = limitInput.value;
 
   if (firstInputValue == "" || secondInputValue == "") {
     alert("구단주명을 모두 입력해주세요.");
+  } else if (limitInputValue < 1 || limitInputValue > 100) {
+    alert("경기 수는 1부터 100까지만 입력할 수 있습니다.");
   } else {
     searchBtn.setAttribute("disabled", true);
     searchBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> 검색`;
+    cancelBtn.classList.add("api-active");
+
+    const abortController = new AbortController();
+    cancelBtn.addEventListener(
+      "click",
+      () => {
+        abortController.abort();
+        apiFinish();
+      },
+      { once: true }
+    );
 
     fetch(
-      `${API_URL}/search?first=${firstInputValue}&second=${secondInputValue}`,
+      `${API_URL}/search?first=${firstInputValue}&second=${secondInputValue}&limit=${limitInputValue}`,
       {
         method: "GET",
+        signal: abortController.signal,
       }
     )
       .then((res) => res.json())
@@ -80,7 +97,9 @@ function search() {
 
           matchData.map((match) => {
             resultsContainer.innerHTML += `
-              <button type="button" class="list-group-item list-group-item-action">
+              <button type="button" id="${
+                match.id
+              }" class="list-group-item list-group-item-action">
                 <p class="date mb-1">${dateFormat(new Date(match.date))}</p>
                   <div class="grid result">
                     <p class="item nickname">${firstInputValue}</p>
@@ -98,10 +117,8 @@ function search() {
             `;
           });
         }
-        searchBtn.removeAttribute("disabled");
-        searchBtn.innerHTML = "검색";
-        firstInput.value = "";
-        secondInput.value = "";
+
+        apiFinish();
       });
   }
 }
@@ -109,3 +126,11 @@ function search() {
 searchBtn.addEventListener("click", () => {
   search();
 });
+
+function apiFinish() {
+  searchBtn.removeAttribute("disabled");
+  searchBtn.innerHTML = "검색";
+  firstInput.value = "";
+  secondInput.value = "";
+  cancelBtn.classList.remove("api-active");
+}

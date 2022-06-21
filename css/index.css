@@ -5,6 +5,7 @@ body {
 .wrapper {
   position: relative;
   max-width: 480px;
+  min-width: 280px;
   height: 100vh;
   margin: 0 auto;
   background-image: url(../images/logo.png);
@@ -32,9 +33,24 @@ header i {
 .form {
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
 }
-.form span {
+.form > span {
+  width: 100%;
   text-align: center;
+}
+.search-setting-btn {
+  text-decoration: none;
+}
+#search-btn {
+  width: 100%;
+}
+#cancel-btn {
+  width: 100%;
+  display: none;
+}
+#cancel-btn.api-active {
+  display: block;
 }
 
 #total,
@@ -91,6 +107,7 @@ footer {
   position: absolute;
   bottom: 0;
   text-align: center;
+  width: 100%;
 }
 footer br {
   display: none;
@@ -120,6 +137,9 @@ footer br {
 }
 #menu-background.active {
   display: block;
+}
+.wrapper.active {
+  overflow: hidden;
 }
 #menu-container.active {
   transform: translateX(0);
@@ -195,5 +215,8 @@ footer br {
   }
   .result h4 {
     font-size: 16px;
+  }
+  footer br {
+    display: block;
   }
 }
