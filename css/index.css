@@ -1,3 +1,7 @@
+body {
+  background-color: #f4f6f8;
+}
+
 .wrapper {
   position: relative;
   max-width: 480px;
@@ -88,6 +92,9 @@ footer {
   bottom: 0;
   text-align: center;
 }
+footer br {
+  display: none;
+}
 
 #menu-background {
   display: none;
@@ -107,7 +114,7 @@ footer {
   padding: 12px;
   margin: 0;
   background-color: #ffffff;
-  transform: translateX(-480px);
+  transform: translateX(-1000px);
   transition: 0.4s;
   z-index: 1;
 }
