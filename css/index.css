@@ -61,6 +61,14 @@ header i {
   position: relative;
   z-index: 1;
 }
+#total,
+#results {
+  display: none;
+}
+#total.active,
+#results.active {
+  display: block;
+}
 
 #total .grid .item:nth-child(1) {
   text-align: left;
