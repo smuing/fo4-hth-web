@@ -89,7 +89,7 @@ async function search() {
       totalData.totalPer = percentage(totalData);
 
       totalContainer.classList.add("active");
-      resultsContainer.classList.add("active");
+      resultsContainer.parentNode.classList.add("active");
 
       resultsContainer.innerHTML = "";
 

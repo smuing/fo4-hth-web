@@ -58,15 +58,12 @@ header i {
 
 #total,
 #results-container {
+  display: none;
   position: relative;
   z-index: 1;
 }
-#total,
-#results {
-  display: none;
-}
 #total.active,
-#results.active {
+#results-container.active {
   display: block;
 }
 
