@@ -61,3 +61,11 @@ function dateFormat(date) {
     minute
   );
 }
+
+function percentage({ totalMatch, totalResult }) {
+  return [
+    Math.round((totalResult[0] / totalMatch) * 100),
+    Math.round((totalResult[1] / totalMatch) * 100),
+    Math.round((totalResult[2] / totalMatch) * 100),
+  ];
+}
