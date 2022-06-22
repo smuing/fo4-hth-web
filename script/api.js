@@ -1,5 +1,5 @@
-// const API_URL = "https://fo4-hth-api.herokuapp.com";
-const API_URL = "http://localhost:3000";
+const API_URL = "https://fo4-hth-api.herokuapp.com";
+// const API_TEST_URL = "http://localhost:3000";
 
 const searchBtn = document.getElementById("search-btn");
 const cancelBtn = document.getElementById("cancel-btn");
