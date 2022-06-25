@@ -6,6 +6,8 @@ let lastSearch = JSON.parse(localStorage.getItem("fo4_hth_last_search"));
 const firstInput = document.getElementById("first-input");
 const secondInput = document.getElementById("second-input");
 const limitInput = document.getElementById("limit-input");
+const topBtn = document.getElementById("top-btn");
+const modalContent = document.getElementById("modal-content");
 
 function setLastSearch() {
   lastSearch = JSON.parse(localStorage.getItem("fo4_hth_last_search"));
@@ -69,3 +71,22 @@ function percentage({ totalMatch, totalResult }) {
     Math.round((totalResult[2] / totalMatch) * 100),
   ];
 }
+
+wrapperContainer.addEventListener("scroll", () => {
+  if (wrapperContainer.scrollTop > 300) {
+    document.querySelector("#top-btn.hidden").classList.remove("disappear");
+    document.querySelector("#top-btn.hidden").classList.add("appear");
+  } else {
+    if (topBtn.classList.contains("appear")) {
+      topBtn.classList.add("disappear");
+      setTimeout(function () {
+        topBtn.classList.remove("appear");
+      }, 1001);
+    }
+  }
+});
+
+topBtn.addEventListener("click", function (e) {
+  e.preventDefault();
+  wrapperContainer.scrollTo({ top: 0, behavior: "smooth" });
+});
