@@ -20,9 +20,9 @@ async function search() {
   var matchData = [];
 
   if (firstInputValue == "" || secondInputValue == "") {
-    alert("구단주명을 모두 입력해주세요.");
+    alert("구단주명을 모두 입력해 주세요.");
   } else if (firstInputValue == secondInputValue) {
-    alert("서로 다른 구단주명을 입력해주세요.");
+    alert("서로 다른 구단주명을 입력해 주세요.");
   } else if (limitInputValue < 1 || limitInputValue > 100) {
     alert("경기 수는 1부터 100까지만 입력할 수 있습니다.");
   } else {
@@ -51,11 +51,11 @@ async function search() {
 
       if (result) {
         if (result.message == "First user could not found") {
-          alert("첫번째 구단주를 찾을 수 없음");
+          alert("첫 번째 구단주를 찾을 수 없습니다.");
           success = false;
           break;
         } else if (result.message == "Second user could not found") {
-          alert("두번째 구단주를 찾을 수 없음");
+          alert("두 번째 구단주를 찾을 수 없습니다.");
           success = false;
           break;
         } else if (result.message == "No last matches") {
