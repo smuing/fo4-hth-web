@@ -1,5 +1,6 @@
 {
   "name": "야 뭐 돼?ㅣ피파온라인4 상대 전적",
+  "short_name": "야 뭐 돼?",
   "icons": [
     {
       "src": "https://smuing.github.io/fo4_hth/favicon/android-icon-36x36.png",
@@ -39,7 +40,7 @@
     }
   ],
   "start_url": "/fo4_hth",
-  "background_color": "white",
+  "background_color": "#fff",
   "display": "standalone",
   "orientation": "portrait"
 }
