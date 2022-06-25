@@ -168,6 +168,10 @@ footer br {
 
 #last-search {
   cursor: pointer;
+  text-align: center;
+}
+#last-search br {
+  display: none;
 }
 
 #top-btn {
@@ -282,6 +286,10 @@ footer br {
   }
 }
 @media only screen and (max-width: 465px) {
+  #last-search br {
+    display: block;
+  }
+  
   #modal .squad {
     flex-direction: column;
   }
