@@ -12,7 +12,7 @@ const modalContent = document.getElementById("modal-content");
 function setLastSearch() {
   lastSearch = JSON.parse(localStorage.getItem("fo4_hth_last_search"));
   if (lastSearch !== null) {
-    lastSearchContainer.innerHTML = `<span>${lastSearch.first}</span> VS <span>${lastSearch.second}</span>`;
+    lastSearchContainer.innerHTML = `<span>${lastSearch.first}</span><br /> VS <br /><span>${lastSearch.second}</span>`;
   } else {
     lastSearchContainer.innerHTML = "<span>최근 검색한 유저가 없음</span>";
   }
