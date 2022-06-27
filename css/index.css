@@ -15,10 +15,10 @@ body {
   background-color: #ffffff;
   box-shadow: 0 0 20px rgb(0 0 0 / 5%);
   overflow-x: hidden;
-  -webkit-user-select:none;
-  -moz-user-select:none;
-  -ms-user-select:none;
-  user-select:none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .container {
@@ -292,7 +292,7 @@ footer br {
   #last-search br {
     display: block;
   }
-  
+
   #modal .squad {
     flex-direction: column;
   }
@@ -303,8 +303,8 @@ footer br {
     display: block;
   }
 }
-@media only screen and (max-width: 426px) {
-  .result {
+@media only screen and (max-width: 427px) {
+  .result.long {
     display: flex;
     flex-direction: column;
   }
@@ -313,6 +313,12 @@ footer br {
   .ratings {
     display: grid;
     grid-template-columns: 1fr 1.5fr 1fr;
+  }
+}
+@media only screen and (max-width: 383px) {
+  .result.m-long {
+    display: flex;
+    flex-direction: column;
   }
 }
 @media only screen and (max-width: 366px) {
@@ -345,6 +351,18 @@ footer br {
   }
   #total .per .item {
     text-align: left !important;
+  }
+}
+@media only screen and (max-width: 339px) {
+  .result.m-short {
+    display: flex;
+    flex-direction: column;
+  }
+}
+@media only screen and (max-width: 295px) {
+  .result.short {
+    display: flex;
+    flex-direction: column;
   }
 }
 @media only screen and (max-width: 290px) {

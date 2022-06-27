@@ -11,6 +11,13 @@ async function search() {
   const secondInputValue = secondInput.value;
   const limitInputValue = limitInput.options[limitInput.selectedIndex].value;
 
+  var nickLength;
+  const firstInputByte = firstInputValue.getBytes();
+  const secondInputByte = secondInputValue.getBytes();
+  firstInputByte >= secondInputByte
+    ? (nickLength = firstInputByte)
+    : (nickLength = secondInputByte);
+
   var success = false;
   var totalData = {
     totalMatch: 0,
@@ -135,7 +142,19 @@ async function search() {
           match.id
         }" class="list-group-item list-group-item-action" onclick="modal(this)">
           <p class="date mb-1">${dateFormat(new Date(match.date))}</p>
-            <div class="grid result">
+            <div class="grid result ${
+              nickLength <= 8
+                ? ""
+                : nickLength <= 10
+                ? "short"
+                : nickLength <= 12
+                ? "m-short"
+                : nickLength <= 14
+                ? "m-long"
+                : nickLength <= 16
+                ? "long"
+                : ""
+            }">
               <p class="item nickname">${firstInputValue}</p>
               <div class="item">
                 <h4>${match.firstGoal} - ${match.secondGoal}</h4>
@@ -162,8 +181,6 @@ searchBtn.addEventListener("click", () => {
 function apiFinish() {
   searchBtn.removeAttribute("disabled");
   searchBtn.innerHTML = "검색";
-  firstInput.value = "";
-  secondInput.value = "";
   cancelBtn.classList.remove("api-active");
 }
 
