@@ -92,7 +92,6 @@ async function search() {
           success = false;
           break;
         } else {
-          console.log(result);
           firstNick = result.userInfo.nickname[0];
           secondNick = result.userInfo.nickname[1];
           accessIds.push(...result.userInfo.accessIds)
@@ -122,7 +121,6 @@ async function search() {
           signal: abortController.signal,
         }
       ).then((res) => res.json()).then(result => {
-        console.log(result)
         if (result.message == "No last matches") {
           totalContainer.innerHTML = "";
           resultsContainer.parentNode.classList.add("active");
