@@ -1,10 +1,13 @@
-const API_URL = "https://fo4-hth-api.herokuapp.com";
-// const API_TEST_URL = "http://localhost:3000";
+// const API_URL = "https://fo4-hth-api.herokuapp.com";
+const API_URL = "http://localhost:3000";
 
 const searchBtn = document.getElementById("search-btn");
 const cancelBtn = document.getElementById("cancel-btn");
 const totalContainer = document.getElementById("total");
 const resultsContainer = document.getElementById("results");
+
+var firstNick = "";
+var secondNick = "";
 
 async function search() {
   const firstInputValue = firstInput.value;
@@ -37,7 +40,7 @@ async function search() {
     searchBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> 검색`;
     cancelBtn.classList.add("api-active");
 
-    const abortController = new AbortController();
+    var abortController = new AbortController();
     cancelBtn.addEventListener(
       "click",
       () => {
@@ -47,9 +50,12 @@ async function search() {
       { once: true }
     );
 
+    var accessIds = [];
+    var matchIds = [];
+
     for (let i = 0; i < limitInputValue; i += 10) {
       const result = await fetch(
-        `${API_URL}/search?first=${firstInputValue}&second=${secondInputValue}&offset=${i}&limit=10`,
+        `${API_URL}/matchids?first=${firstInputValue}&second=${secondInputValue}&offset=${i}&limit=10`,
         {
           method: "GET",
           signal: abortController.signal,
@@ -65,28 +71,33 @@ async function search() {
           alert("두 번째 구단주를 찾을 수 없습니다.");
           success = false;
           break;
+        } else if (result.message == "No matches user0") {
+          totalContainer.innerHTML = "";
+          resultsContainer.parentNode.classList.add("active");
+          resultsContainer.innerHTML = `<div class="alert alert-danger" role="alert">
+                                          ${result.userInfo.nickname[0]}님의 최근 ${limitInputValue}경기가 없습니다.</div>`;
+          success = false;
+          break;
+        } else if (result.message == "No matches user1") {
+          totalContainer.innerHTML = "";
+          resultsContainer.parentNode.classList.add("active");
+          resultsContainer.innerHTML = `<div class="alert alert-danger" role="alert">
+                                          ${result.userInfo.nickname[1]}님의 최근 ${limitInputValue}경기가 없습니다.</div>`;
+          success = false;
+          break;
         } else if (result.message == "No last matches") {
           totalContainer.innerHTML = "";
           resultsContainer.parentNode.classList.add("active");
           resultsContainer.innerHTML = `<div class="alert alert-danger" role="alert">
-                                          최근 ${limitInputValue}경기 중 같이 플레이한 경기를 찾을 수 없습니다.</div>`;
+                                          최근 ${limitInputValue}경기가 없습니다.</div>`;
           success = false;
           break;
         } else {
-          localStorage.setItem(
-            "fo4_hth_last_search",
-            JSON.stringify({
-              first: firstInputValue,
-              second: secondInputValue,
-            })
-          );
-          setLastSearch();
-
-          totalData.totalMatch += result.totalData.totalMatch;
-          totalData.totalResult[0] += result.totalData.totalResult[0];
-          totalData.totalResult[1] += result.totalData.totalResult[1];
-          totalData.totalResult[2] += result.totalData.totalResult[2];
-          matchData.push(...result.matchData);
+          console.log(result);
+          firstNick = result.userInfo.nickname[0];
+          secondNick = result.userInfo.nickname[1];
+          accessIds.push(...result.userInfo.accessIds)
+          matchIds.push(...result.matchIds);
 
           success = true;
         }
@@ -94,83 +105,116 @@ async function search() {
     }
 
     if (success) {
-      totalData.totalPer = percentage(totalData);
 
-      totalContainer.classList.add("active");
-      resultsContainer.parentNode.classList.add("active");
+      var abortController = new AbortController();
+      cancelBtn.addEventListener(
+        "click",
+        () => {
+          abortController.abort();
+          apiFinish();
+        },
+        { once: true }
+      );
 
-      resultsContainer.innerHTML = "";
+      fetch(
+        `${API_URL}/matchdetail?accessIds=${accessIds}&matchIds=${[...new Set(matchIds)]}`,
+        {
+          method: "GET",
+          signal: abortController.signal,
+        }
+      ).then((res) => res.json()).then(result => {
+        console.log(result)
+        if (result.message == "No last matches") {
+          totalContainer.innerHTML = "";
+          resultsContainer.parentNode.classList.add("active");
+          resultsContainer.innerHTML = `<div class="alert alert-danger" role="alert">
+                                          최근 ${limitInputValue}경기 중 같이 플레이한 경기를 찾을 수 없습니다.</div>`;
+        } else {
+          const totalData = result.totalData;
+          const matchData = result.matchData;
 
-      totalContainer.innerHTML = `
-      <div class="card">
-        <div class="card-body">
-          <div class="card-title grid">
-            <span class="item">${firstInputValue}</span>
-            <small class="item text-muted">총 ${totalData.totalMatch}경기</small>
-            <span class="item">${secondInputValue}</span>
-          </div>
-          <div class="progress mb-2">
-            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: ${totalData.totalPer[0]}%" aria-valuenow="${totalData.totalPer[0]}" aria-valuemin="0" aria-valuemax="100"></div>
-            <div class="progress-bar progress-bar-striped progress-bar-animated bg-secondary" role="progressbar" style="width: ${totalData.totalPer[1]}%" aria-valuenow="${totalData.totalPer[1]}" aria-valuemin="0" aria-valuemax="100"></div>
-            <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" style="width: ${totalData.totalPer[2]}%" aria-valuenow="${totalData.totalPer[2]}" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
-          <div class="count-container">
-            <div class="count grid mb-1">
-              <div class="item">
-                <button type="button" class="btn btn-primary">${totalData.totalResult[0]}</button>
+          totalContainer.classList.add("active");
+          resultsContainer.parentNode.classList.add("active");
+
+          resultsContainer.innerHTML = "";
+
+          totalContainer.innerHTML = `
+            <div class="card">
+              <div class="card-body">
+                <div class="card-title grid">
+                  <span class="item">${firstNick}</span>
+                  <small class="item text-muted">총 ${totalData.totalMatch}경기</small>
+                  <span class="item">${secondNick}</span>
+                </div>
+                <div class="progress mb-2">
+                  <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: ${totalData.totalPer[0]}%" aria-valuenow="${totalData.totalPer[0]}" aria-valuemin="0" aria-valuemax="100"></div>
+                  <div class="progress-bar progress-bar-striped progress-bar-animated bg-secondary" role="progressbar" style="width: ${totalData.totalPer[1]}%" aria-valuenow="${totalData.totalPer[1]}" aria-valuemin="0" aria-valuemax="100"></div>
+                  <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" style="width: ${totalData.totalPer[2]}%" aria-valuenow="${totalData.totalPer[2]}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div class="count-container">
+                  <div class="count grid mb-1">
+                    <div class="item">
+                      <button type="button" class="btn btn-primary filter-btn" onclick="matchFilter('win')">${totalData.totalResult[0]}</button>
+                    </div>
+                    <div class="item">
+                      <button type="button" class="btn btn-secondary filter-btn" onclick="matchFilter('draw')">${totalData.totalResult[1]}</button>
+                    </div>
+                    <div class="item">
+                      <button type="button" class="btn btn-danger filter-btn" onclick="matchFilter('lose')">${totalData.totalResult[2]}</button>
+                    </div>
+                  </div>
+                  <div class="count per grid">
+                    <small class="item">${firstNick}<br>${totalData.totalPer[0]}%</small>
+                    <small class="item">무승부<br>${totalData.totalPer[1]}%</small>
+                    <small class="item">${secondNick}<br>${totalData.totalPer[2]}%</small>
+                  </div>
+                </div>
               </div>
-              <div class="item">
-                <button type="button" class="btn btn-secondary">${totalData.totalResult[1]}</button>
-              </div>
-              <div class="item">
-                <button type="button" class="btn btn-danger">${totalData.totalResult[2]}</button>
-              </div>
-            </div>
-            <div class="count per grid">
-              <small class="item">${firstInputValue}<br>${totalData.totalPer[0]}%</small>
-              <small class="item">무승부<br>${totalData.totalPer[1]}%</small>
-              <small class="item">${secondInputValue}<br>${totalData.totalPer[2]}%</small>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
+            </div>`;
 
-      matchData.map((match) => {
-        resultsContainer.innerHTML += `
-        <button type="button" id="${
-          match.id
-        }" class="list-group-item list-group-item-action" onclick="modal(this)">
-          <p class="date mb-1">${dateFormat(new Date(match.date))}</p>
-            <div class="grid result ${
-              nickLength <= 8
+          matchData.map((match) => {
+            resultsContainer.innerHTML += `
+              <button type="button" id="${match.id
+              }" class="match-btn list-group-item list-group-item-action ${match.matchResult=="승"?"win":match.matchResult=="무"?"draw":match.matchResult=="패"?"lose":""}" onclick="modal(this)">
+                <p class="date mb-1">${dateFormat(new Date(match.date))}</p>
+                  <div class="grid result ${nickLength <= 8
                 ? ""
                 : nickLength <= 10
-                ? "short"
-                : nickLength <= 12
-                ? "m-short"
-                : nickLength <= 14
-                ? "m-long"
-                : nickLength <= 16
-                ? "long"
-                : ""
-            }">
-              <p class="item nickname">${firstInputValue}</p>
-              <div class="item">
-                <h4>${match.firstGoal} - ${match.secondGoal}</h4>
-              </div>
-              <p class="item nickname">${secondInputValue}</p>
-            </div>
-          ${
-            match.shootOut
-              ? `<small class="shoot-out">(Pen ${match.firstShootOutGoal} - ${match.secondShootOutGoal})</small>`
-              : ``
-          }
-        </button>
-      `;
+                  ? "short"
+                  : nickLength <= 12
+                    ? "m-short"
+                    : nickLength <= 14
+                      ? "m-long"
+                      : nickLength <= 16
+                        ? "long"
+                        : ""
+              }">
+                    <p class="item nickname">${firstNick}</p>
+                    <div class="item">
+                      <h4>${match.firstGoal} - ${match.secondGoal}</h4>
+                    </div>
+                    <p class="item nickname">${secondNick}</p>
+                  </div>
+                ${match.shootOut
+                ? `<small class="shoot-out">(Pen ${match.firstShootOutGoal} - ${match.secondShootOutGoal})</small>`
+                : ``
+              }
+              </button>`;
+          });
+        }
+
+        localStorage.setItem(
+          "fo4_hth_last_search",
+          JSON.stringify({
+            first: firstNick,
+            second: secondNick,
+          })
+        );
+        setLastSearch();
+
+        apiFinish();
       });
     }
-    apiFinish();
   }
 }
 
@@ -186,12 +230,6 @@ function apiFinish() {
 
 function modal(e) {
   const id = e.getAttribute("id");
-  const firstNick = document
-    .getElementById(`${id}`)
-    .getElementsByClassName("nickname")[0].textContent;
-  const secondNick = document
-    .getElementById(`${id}`)
-    .getElementsByClassName("nickname")[1].textContent;
   const score = document
     .getElementById(`${id}`)
     .getElementsByTagName("h4")[0].textContent;
@@ -238,36 +276,30 @@ function modal(e) {
       let secondSquad = "";
       result.firstPlayers.map((player, i) => {
         if (player.spName != undefined) {
-          firstSquad += `<span class="position ${
-            i == 0 ? "GK" : i <= 8 ? "DF" : i <= 19 ? "MF" : "FW"
-          }">${position[i]}</span> ${
-            player.spName
-          }&emsp;<span class="badge rounded-pill ${
-            player.spRating < 6
+          firstSquad += `<span class="position ${i == 0 ? "GK" : i <= 8 ? "DF" : i <= 19 ? "MF" : "FW"
+            }">${position[i]}</span> ${player.spName
+            }&emsp;<span class="badge rounded-pill ${player.spRating < 6
               ? "bg-danger"
               : player.spRating < 7
-              ? "usually"
-              : player.spRating < 9
-              ? "good"
-              : "bg-primary"
-          }">${player.spRating}</span> <br />`;
+                ? "usually"
+                : player.spRating < 9
+                  ? "good"
+                  : "bg-primary"
+            }">${player.spRating}</span> <br />`;
         }
       });
       result.secondPlayers.map((player, i) => {
         if (player.spName != undefined) {
-          secondSquad += `<span class="position ${
-            i == 0 ? "GK" : i <= 8 ? "DF" : i <= 19 ? "MF" : "FW"
-          }">${position[i]}</span> ${
-            player.spName
-          }&emsp;<span class="badge rounded-pill ${
-            player.spRating < 6
+          secondSquad += `<span class="position ${i == 0 ? "GK" : i <= 8 ? "DF" : i <= 19 ? "MF" : "FW"
+            }">${position[i]}</span> ${player.spName
+            }&emsp;<span class="badge rounded-pill ${player.spRating < 6
               ? "bg-danger"
               : player.spRating < 7
-              ? "usually"
-              : player.spRating < 9
-              ? "good"
-              : "bg-primary"
-          }">${player.spRating}</span> <br />`;
+                ? "usually"
+                : player.spRating < 9
+                  ? "good"
+                  : "bg-primary"
+            }">${player.spRating}</span> <br />`;
         }
       });
 
@@ -292,33 +324,30 @@ function modal(e) {
                   </div>
                   <p class="item nickname">${secondNick}</p>
                 </div>
-                ${
-                  shootOut ? `<small class="shoot-out">${shootOut}</small>` : ``
-                }
+                ${shootOut ? `<small class="shoot-out">${shootOut}</small>` : ``
+        }
               </li>
               <li class="list-group-item">
                 <div class="grid result ratings">
-                  <p class="item rating"><span class="badge rounded-pill ${
-                    result.firstRating < 6
-                      ? "bg-danger"
-                      : result.firstRating < 7
-                      ? "usually"
-                      : result.firstRating < 9
-                      ? "good"
-                      : "bg-primary"
-                  }">${result.firstRating}</span></p>
+                  <p class="item rating"><span class="badge rounded-pill ${result.firstRating < 6
+          ? "bg-danger"
+          : result.firstRating < 7
+            ? "usually"
+            : result.firstRating < 9
+              ? "good"
+              : "bg-primary"
+        }">${result.firstRating}</span></p>
                   <div class="item">
                     <h5>경기 평점</h5>
                   </div>
-                  <p class="item rating"><span class="badge rounded-pill ${
-                    result.secondRating < 6
-                      ? "bg-danger"
-                      : result.secondRating < 7
-                      ? "usually"
-                      : result.secondRating < 9
-                      ? "good"
-                      : "bg-primary"
-                  }">${result.secondRating}</span></p>
+                  <p class="item rating"><span class="badge rounded-pill ${result.secondRating < 6
+          ? "bg-danger"
+          : result.secondRating < 7
+            ? "usually"
+            : result.secondRating < 9
+              ? "good"
+              : "bg-primary"
+        }">${result.secondRating}</span></p>
                 </div>
               </li>
               <li class="list-group-item">
