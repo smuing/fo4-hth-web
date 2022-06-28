@@ -81,13 +81,18 @@ header i {
   text-align: right;
 }
 #total .btn-primary.filter-btn.on {
-  box-shadow: 0 0 0 0.25rem rgb(49 132 253 / 50%);
+  box-shadow: 0 0 0 0.25rem rgb(49 132 253 / 50%) !important;
 }
 #total .btn-secondary.filter-btn.on {
-  box-shadow: 0 0 0 0.25rem rgb(130 138 145 / 50%);
+  box-shadow: 0 0 0 0.25rem rgb(130 138 145 / 50%) !important;
 }
 #total .btn-danger.filter-btn.on {
-  box-shadow: 0 0 0 0.25rem rgb(225 83 97 / 50%);
+  box-shadow: 0 0 0 0.25rem rgb(225 83 97 / 50%) !important;
+}
+#total .btn-primary.filter-btn:focus,
+#total .btn-secondary.filter-btn:focus, 
+#total .btn-danger.filter-btn:focus {
+  box-shadow: none;
 }
 #total .count small {
   color: #6c757d;
