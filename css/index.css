@@ -8,10 +8,6 @@ body {
   min-width: 280px;
   height: 100vh;
   margin: 0 auto;
-  background-image: url(../images/logo.png);
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: 248px;
   background-color: #ffffff;
   box-shadow: 0 0 20px rgb(0 0 0 / 5%);
   overflow-x: hidden;
@@ -60,17 +56,21 @@ header i {
   display: block;
 }
 
-#total,
-#results-container {
-  display: none;
-  position: relative;
-  z-index: 1;
-}
 #total.active,
 #results-container.active {
   display: block;
 }
 
+#total {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+#total > img {
+  width: 50%;
+  -webkit-user-drag: none;
+}
 #total .grid .item:nth-child(1) {
   text-align: left;
 }
@@ -90,7 +90,7 @@ header i {
   box-shadow: 0 0 0 0.25rem rgb(225 83 97 / 50%) !important;
 }
 #total .btn-primary.filter-btn:focus,
-#total .btn-secondary.filter-btn:focus, 
+#total .btn-secondary.filter-btn:focus,
 #total .btn-danger.filter-btn:focus {
   box-shadow: none;
 }
@@ -98,13 +98,18 @@ header i {
   color: #6c757d;
 }
 
+#results-container {
+  display: none;
+  position: relative;
+  z-index: 1;
+}
 #results {
-  border: 1px solid rgba(0,0,0,.125);
+  border: 1px solid rgba(0, 0, 0, 0.125);
   overflow: hidden;
 }
 #results .list-group-item {
   border: none;
-  border-bottom: 1px solid rgba(0,0,0,.125);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
 }
 #results .list-group-item.hide {
   display: none;
@@ -272,9 +277,13 @@ footer br {
 #modal .squad {
   display: flex;
   justify-content: space-between;
+  flex-direction: column;
+}
+#modal .squad > div {
+  margin-bottom: 30px;
 }
 #modal .squad div .nickname {
-  display: none;
+  display: block;
 }
 #modal .position.GK {
   color: #cda20b;
@@ -309,22 +318,14 @@ footer br {
   #modal-content {
     width: 100%;
   }
+}
+@media only screen and (max-height: 880px) {
   #modal .card {
     height: 100%;
   }
 }
 @media only screen and (max-width: 465px) {
   #last-search br {
-    display: block;
-  }
-
-  #modal .squad {
-    flex-direction: column;
-  }
-  #modal .squad > div {
-    margin-bottom: 30px;
-  }
-  #modal .squad div .nickname {
     display: block;
   }
 }

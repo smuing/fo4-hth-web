@@ -94,7 +94,7 @@ async function search() {
         } else {
           firstNick = result.userInfo.nickname[0];
           secondNick = result.userInfo.nickname[1];
-          accessIds.push(...result.userInfo.accessIds)
+          accessIds.push(...result.userInfo.accessIds);
           matchIds.push(...result.matchIds);
 
           success = true;
@@ -103,7 +103,6 @@ async function search() {
     }
 
     if (success) {
-
       var abortController = new AbortController();
       cancelBtn.addEventListener(
         "click",
@@ -115,27 +114,31 @@ async function search() {
       );
 
       fetch(
-        `${API_URL}/matchdetail?accessIds=${accessIds}&matchIds=${[...new Set(matchIds)]}`,
+        `${API_URL}/matchdetail?accessIds=${accessIds}&matchIds=${[
+          ...new Set(matchIds),
+        ]}`,
         {
           method: "GET",
           signal: abortController.signal,
         }
-      ).then((res) => res.json()).then(result => {
-        if (result.message == "No last matches") {
-          totalContainer.innerHTML = "";
-          resultsContainer.parentNode.classList.add("active");
-          resultsContainer.innerHTML = `<div class="alert alert-danger" role="alert">
+      )
+        .then((res) => res.json())
+        .then((result) => {
+          if (result.message == "No last matches") {
+            totalContainer.innerHTML = "";
+            resultsContainer.parentNode.classList.add("active");
+            resultsContainer.innerHTML = `<div class="alert alert-danger" role="alert">
                                           최근 ${limitInputValue}경기 중 같이 플레이한 경기를 찾을 수 없습니다.</div>`;
-        } else {
-          const totalData = result.totalData;
-          const matchData = result.matchData;
+          } else {
+            const totalData = result.totalData;
+            const matchData = result.matchData;
 
-          totalContainer.classList.add("active");
-          resultsContainer.parentNode.classList.add("active");
+            totalContainer.classList.add("active");
+            resultsContainer.parentNode.classList.add("active");
 
-          resultsContainer.innerHTML = "";
+            resultsContainer.innerHTML = "";
 
-          totalContainer.innerHTML = `
+            totalContainer.innerHTML = `
             <div class="card">
               <div class="card-body">
                 <div class="card-title grid">
@@ -169,48 +172,59 @@ async function search() {
               </div>
             </div>`;
 
-          matchData.map((match) => {
-            resultsContainer.innerHTML += `
-              <button type="button" id="${match.id
-              }" class="match-btn list-group-item list-group-item-action ${match.matchResult=="승"?"win":match.matchResult=="무"?"draw":match.matchResult=="패"?"lose":""}" onclick="modal(this)">
+            matchData.map((match) => {
+              resultsContainer.innerHTML += `
+              <button type="button" id="${
+                match.id
+              }" class="match-btn list-group-item list-group-item-action ${
+                match.matchResult == "승"
+                  ? "win"
+                  : match.matchResult == "무"
+                  ? "draw"
+                  : match.matchResult == "패"
+                  ? "lose"
+                  : ""
+              }" onclick="modal(this)">
                 <p class="date mb-1">${dateFormat(new Date(match.date))}</p>
-                  <div class="grid result ${nickLength <= 8
-                ? ""
-                : nickLength <= 10
-                  ? "short"
-                  : nickLength <= 12
-                    ? "m-short"
-                    : nickLength <= 14
+                  <div class="grid result ${
+                    nickLength <= 8
+                      ? ""
+                      : nickLength <= 10
+                      ? "short"
+                      : nickLength <= 12
+                      ? "m-short"
+                      : nickLength <= 14
                       ? "m-long"
                       : nickLength <= 16
-                        ? "long"
-                        : ""
-              }">
+                      ? "long"
+                      : ""
+                  }">
                     <p class="item nickname">${firstNick}</p>
                     <div class="item">
                       <h4>${match.firstGoal} - ${match.secondGoal}</h4>
                     </div>
                     <p class="item nickname">${secondNick}</p>
                   </div>
-                ${match.shootOut
-                ? `<small class="shoot-out">(Pen ${match.firstShootOutGoal} - ${match.secondShootOutGoal})</small>`
-                : ``
-              }
+                ${
+                  match.shootOut
+                    ? `<small class="shoot-out">(Pen ${match.firstShootOutGoal} - ${match.secondShootOutGoal})</small>`
+                    : ``
+                }
               </button>`;
-          });
-        }
+            });
+          }
 
-        localStorage.setItem(
-          "fo4_hth_last_search",
-          JSON.stringify({
-            first: firstNick,
-            second: secondNick,
-          })
-        );
-        setLastSearch();
+          localStorage.setItem(
+            "fo4_hth_last_search",
+            JSON.stringify({
+              first: firstNick,
+              second: secondNick,
+            })
+          );
+          setLastSearch();
 
-        apiFinish();
-      });
+          apiFinish();
+        });
     }
   }
 }
@@ -273,30 +287,36 @@ function modal(e) {
       let secondSquad = "";
       result.firstPlayers.map((player, i) => {
         if (player.spName != undefined) {
-          firstSquad += `<span class="position ${i == 0 ? "GK" : i <= 8 ? "DF" : i <= 19 ? "MF" : "FW"
-            }">${position[i]}</span> ${player.spName
-            }&emsp;<span class="badge rounded-pill ${player.spRating < 6
+          firstSquad += `<span class="position ${
+            i == 0 ? "GK" : i <= 8 ? "DF" : i <= 19 ? "MF" : "FW"
+          }">${position[i]}</span> ${
+            player.spName
+          }&emsp;<span class="badge rounded-pill ${
+            player.spRating < 6
               ? "bg-danger"
               : player.spRating < 7
-                ? "usually"
-                : player.spRating < 9
-                  ? "good"
-                  : "bg-primary"
-            }">${player.spRating}</span> <br />`;
+              ? "usually"
+              : player.spRating < 9
+              ? "good"
+              : "bg-primary"
+          }">${player.spRating}</span> <br />`;
         }
       });
       result.secondPlayers.map((player, i) => {
         if (player.spName != undefined) {
-          secondSquad += `<span class="position ${i == 0 ? "GK" : i <= 8 ? "DF" : i <= 19 ? "MF" : "FW"
-            }">${position[i]}</span> ${player.spName
-            }&emsp;<span class="badge rounded-pill ${player.spRating < 6
+          secondSquad += `<span class="position ${
+            i == 0 ? "GK" : i <= 8 ? "DF" : i <= 19 ? "MF" : "FW"
+          }">${position[i]}</span> ${
+            player.spName
+          }&emsp;<span class="badge rounded-pill ${
+            player.spRating < 6
               ? "bg-danger"
               : player.spRating < 7
-                ? "usually"
-                : player.spRating < 9
-                  ? "good"
-                  : "bg-primary"
-            }">${player.spRating}</span> <br />`;
+              ? "usually"
+              : player.spRating < 9
+              ? "good"
+              : "bg-primary"
+          }">${player.spRating}</span> <br />`;
         }
       });
 
@@ -321,30 +341,33 @@ function modal(e) {
                   </div>
                   <p class="item nickname">${secondNick}</p>
                 </div>
-                ${shootOut ? `<small class="shoot-out">${shootOut}</small>` : ``
-        }
+                ${
+                  shootOut ? `<small class="shoot-out">${shootOut}</small>` : ``
+                }
               </li>
               <li class="list-group-item">
                 <div class="grid result ratings">
-                  <p class="item rating"><span class="badge rounded-pill ${result.firstRating < 6
-          ? "bg-danger"
-          : result.firstRating < 7
-            ? "usually"
-            : result.firstRating < 9
-              ? "good"
-              : "bg-primary"
-        }">${result.firstRating}</span></p>
+                  <p class="item rating"><span class="badge rounded-pill ${
+                    result.firstRating < 6
+                      ? "bg-danger"
+                      : result.firstRating < 7
+                      ? "usually"
+                      : result.firstRating < 9
+                      ? "good"
+                      : "bg-primary"
+                  }">${result.firstRating}</span></p>
                   <div class="item">
                     <h5>경기 평점</h5>
                   </div>
-                  <p class="item rating"><span class="badge rounded-pill ${result.secondRating < 6
-          ? "bg-danger"
-          : result.secondRating < 7
-            ? "usually"
-            : result.secondRating < 9
-              ? "good"
-              : "bg-primary"
-        }">${result.secondRating}</span></p>
+                  <p class="item rating"><span class="badge rounded-pill ${
+                    result.secondRating < 6
+                      ? "bg-danger"
+                      : result.secondRating < 7
+                      ? "usually"
+                      : result.secondRating < 9
+                      ? "good"
+                      : "bg-primary"
+                  }">${result.secondRating}</span></p>
                 </div>
               </li>
               <li class="list-group-item">

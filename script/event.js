@@ -107,12 +107,12 @@ function matchFilter(result) {
       matchBtn[i].classList.remove("hide");
     }
     for (let i = 0; i < filterBtn.length; i++) {
-      filterBtn[i].classList.remove("on")
+      filterBtn[i].classList.remove("on");
     }
     resultsContainer.parentNode.classList.add("active");
   } else {
     for (let i = 0; i < filterBtn.length; i++) {
-      filterBtn[i].classList.remove("on")
+      filterBtn[i].classList.remove("on");
     }
     for (let i = 0; i < matchBtn.length; i++) {
       if (matchBtn[i].classList.contains(result)) {
@@ -127,6 +127,6 @@ function matchFilter(result) {
     } else {
       resultsContainer.parentNode.classList.add("active");
     }
-    event.target.classList.add("on")
+    event.target.classList.add("on");
   }
 }
