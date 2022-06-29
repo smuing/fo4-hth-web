@@ -75,17 +75,19 @@
 
     <div id="menu-background"></div>
     <div id="menu-container" class="container">
-      <div id="menu-header" class="mb-3">
-        <span>최근 검색 유저</span>
-        <i class="fa-solid fa-xmark" onclick="menu()"></i>
+      <div>
+        <div id="menu-header" class="mb-3">
+           <span>최근 검색 유저</span>
+           <i class="fa-solid fa-xmark" onclick="menu()"></i>
+        </div>
+        <div class="list-group">
+          <div id="last-search" class="list-group-item list-group-item-action"></div>
+        </div>
+        <footer class="mb-2">
+          <span><span>Data based on </span><br />
+            <span style="white-space: nowrap;">NEXON DEVELOPERS</span></span>
+        </footer>
       </div>
-      <div class="list-group">
-        <div id="last-search" class="list-group-item list-group-item-action"></div>
-      </div>
-      <footer class="mb-2">
-        <span>Data based on <br />
-          NEXON DEVELOPERS</span>
-      </footer>
     </div>
 
     <div id="top-btn" class="hidden">
