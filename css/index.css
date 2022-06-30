@@ -112,15 +112,14 @@ header i {
   display: none;
 }
 #results {
-  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-top: 1px solid rgba(0, 0, 0, 0.125);
+  border-left: 1px solid rgba(0, 0, 0, 0.125);
+  border-right: 1px solid rgba(0, 0, 0, 0.125);
   overflow: hidden;
 }
 #results .list-group-item {
   border: none;
   border-bottom: 1px solid rgba(0, 0, 0, 0.125);
-}
-#results .list-group-item:last-child {
-  border: none;
 }
 #results .list-group-item.hide {
   display: none;
