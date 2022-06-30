@@ -250,7 +250,7 @@ const matchDataApi = async (abortController = new AbortController()) => {
     matchBtn[i].classList.remove("hide");
   }
   offset += 1;
-  if (matchIds.length - 1 > offset && matchIds[offset - 1].length == 10) {
+  if (matchIds.length >= offset + 1 && matchIds[offset - 1].length == 10) {
     moreContainer.classList.add("active");
     moreBtn.addEventListener("click", matchDataApi, { once: true });
   } else {
