@@ -85,6 +85,7 @@ topBtn.addEventListener("click", function (e) {
   wrapperContainer.scrollTo({ top: 0, behavior: "smooth" });
 });
 
+// 문자열 byte 구하기
 String.prototype.getBytes = function () {
   const contents = this;
   let str_character;
@@ -100,6 +101,29 @@ String.prototype.getBytes = function () {
   return int_char_count;
 };
 
+// 배열 n개씩 나누기
+Array.prototype.division = function (n) {
+  var arr = this;
+  var len = arr.length;
+  var cnt = Math.floor(len / n) + (Math.floor(len % n) > 0 ? 1 : 0);
+  var tmp = [];
+
+  for (var i = 0; i < cnt; i++) {
+    tmp.push(arr.splice(0, n));
+  }
+
+  return tmp;
+};
+
+// 승률 구하기
+function percentage({ totalMatch, totalResult }) {
+  return [
+    Math.round((totalResult[0] / totalMatch) * 100),
+    Math.round((totalResult[1] / totalMatch) * 100),
+    Math.round((totalResult[2] / totalMatch) * 100),
+  ];
+}
+
 function matchFilter(result) {
   var noHide = 0;
   if (event.target.classList.contains("on")) {
@@ -109,7 +133,7 @@ function matchFilter(result) {
     for (let i = 0; i < filterBtn.length; i++) {
       filterBtn[i].classList.remove("on");
     }
-    resultsContainer.parentNode.classList.add("active");
+    resultsContainer.classList.remove("hide");
   } else {
     for (let i = 0; i < filterBtn.length; i++) {
       filterBtn[i].classList.remove("on");
@@ -123,9 +147,9 @@ function matchFilter(result) {
       }
     }
     if (noHide == 0) {
-      resultsContainer.parentNode.classList.remove("active");
+      resultsContainer.classList.add("hide");
     } else {
-      resultsContainer.parentNode.classList.add("active");
+      resultsContainer.classList.remove("hide");
     }
     event.target.classList.add("on");
   }

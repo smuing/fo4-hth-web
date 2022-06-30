@@ -4,16 +4,25 @@ const searchBtn = document.getElementById("search-btn");
 const cancelBtn = document.getElementById("cancel-btn");
 const totalContainer = document.getElementById("total");
 const resultsContainer = document.getElementById("results");
+const moreContainer = document.getElementById("more");
+const moreBtn = document.getElementById("more-btn");
 
 var firstNick = "";
 var secondNick = "";
+var nickLength = 0;
+var offset = 0;
+var accessIds = [];
+var matchIds = [];
+var totalData = {
+  totalMatch: 0,
+  totalResult: [0, 0, 0],
+  totalPer: [0, 0, 0],
+};
 
 async function search() {
   const firstInputValue = firstInput.value;
   const secondInputValue = secondInput.value;
-  const limitInputValue = limitInput.options[limitInput.selectedIndex].value;
 
-  var nickLength;
   const firstInputByte = firstInputValue.getBytes();
   const secondInputByte = secondInputValue.getBytes();
   firstInputByte >= secondInputByte
@@ -21,25 +30,17 @@ async function search() {
     : (nickLength = secondInputByte);
 
   var success = false;
-  var totalData = {
-    totalMatch: 0,
-    totalResult: [0, 0, 0],
-    totalPer: [0, 0, 0],
-  };
-  var matchData = [];
 
   if (firstInputValue == "" || secondInputValue == "") {
     alert("구단주명을 모두 입력해 주세요.");
   } else if (firstInputValue == secondInputValue) {
     alert("서로 다른 구단주명을 입력해 주세요.");
-  } else if (limitInputValue < 1 || limitInputValue > 100) {
-    alert("경기 수는 1부터 100까지만 입력할 수 있습니다.");
   } else {
     searchBtn.setAttribute("disabled", true);
     searchBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> 검색`;
     cancelBtn.classList.add("api-active");
 
-    var abortController = new AbortController();
+    let abortController = new AbortController();
     cancelBtn.addEventListener(
       "click",
       () => {
@@ -49,61 +50,59 @@ async function search() {
       { once: true }
     );
 
-    var accessIds = [];
-    var matchIds = [];
+    const result = await fetch(
+      `${API_URL}/matchids?first=${firstInputValue}&second=${secondInputValue}`,
+      {
+        method: "GET",
+        signal: abortController.signal,
+      }
+    ).then((res) => res.json());
 
-    for (let i = 0; i < limitInputValue; i += 10) {
-      const result = await fetch(
-        `${API_URL}/matchids?first=${firstInputValue}&second=${secondInputValue}&offset=${i}&limit=10`,
-        {
-          method: "GET",
-          signal: abortController.signal,
-        }
-      ).then((res) => res.json());
+    if (result) {
+      if (result.message == "First user could not found") {
+        alert("첫 번째 구단주를 찾을 수 없습니다.");
+        success = false;
+      } else if (result.message == "Second user could not found") {
+        alert("두 번째 구단주를 찾을 수 없습니다.");
+        success = false;
+      } else if (result.message == "No matches user0") {
+        totalContainer.innerHTML = "";
+        resultsContainer.parentNode.classList.add("active");
+        resultsContainer.innerHTML = `<div class="alert alert-danger" role="alert">
+                                          ${result.userInfo.nickname[0]}님의 경기를 찾을 수 없습니다.</div>`;
+        success = false;
+      } else if (result.message == "No matches user1") {
+        totalContainer.innerHTML = "";
+        resultsContainer.parentNode.classList.add("active");
+        resultsContainer.innerHTML = `<div class="alert alert-danger" role="alert">
+                                          ${result.userInfo.nickname[1]}님의 경기를 찾을 수 없습니다.</div>`;
+        success = false;
+      } else if (result.message == "No last matches") {
+        totalContainer.innerHTML = "";
+        resultsContainer.parentNode.classList.add("active");
+        resultsContainer.innerHTML = `<div class="alert alert-danger" role="alert">
+                                          경기를 찾을 수 없습니다.</div>`;
+        success = false;
+      } else {
+        firstNick = result.userInfo.nickname[0];
+        secondNick = result.userInfo.nickname[1];
+        accessIds.push(...result.userInfo.accessIds);
+        matchIds.push(...result.matchIds);
+        matchIds = matchIds.filter((e, i, a) => a.indexOf(e) !== i);
+        matchIds = matchIds.division(10);
+        totalData = {
+          totalMatch: 0,
+          totalResult: [0, 0, 0],
+          totalPer: [0, 0, 0],
+        };
 
-      if (result) {
-        if (result.message == "First user could not found") {
-          alert("첫 번째 구단주를 찾을 수 없습니다.");
-          success = false;
-          break;
-        } else if (result.message == "Second user could not found") {
-          alert("두 번째 구단주를 찾을 수 없습니다.");
-          success = false;
-          break;
-        } else if (result.message == "No matches user0") {
-          totalContainer.innerHTML = "";
-          resultsContainer.parentNode.classList.add("active");
-          resultsContainer.innerHTML = `<div class="alert alert-danger" role="alert">
-                                          ${result.userInfo.nickname[0]}님의 최근 ${limitInputValue}경기가 없습니다.</div>`;
-          success = false;
-          break;
-        } else if (result.message == "No matches user1") {
-          totalContainer.innerHTML = "";
-          resultsContainer.parentNode.classList.add("active");
-          resultsContainer.innerHTML = `<div class="alert alert-danger" role="alert">
-                                          ${result.userInfo.nickname[1]}님의 최근 ${limitInputValue}경기가 없습니다.</div>`;
-          success = false;
-          break;
-        } else if (result.message == "No last matches") {
-          totalContainer.innerHTML = "";
-          resultsContainer.parentNode.classList.add("active");
-          resultsContainer.innerHTML = `<div class="alert alert-danger" role="alert">
-                                          최근 ${limitInputValue}경기가 없습니다.</div>`;
-          success = false;
-          break;
-        } else {
-          firstNick = result.userInfo.nickname[0];
-          secondNick = result.userInfo.nickname[1];
-          accessIds.push(...result.userInfo.accessIds);
-          matchIds.push(...result.matchIds);
-
-          success = true;
-        }
+        success = true;
       }
     }
 
     if (success) {
-      var abortController = new AbortController();
+      console.log(matchIds);
+      let abortController = new AbortController();
       cancelBtn.addEventListener(
         "click",
         () => {
@@ -112,33 +111,61 @@ async function search() {
         },
         { once: true }
       );
+      resultsContainer.parentNode.classList.remove("active");
+      resultsContainer.innerHTML = "";
+      totalContainer.innerHTML = "";
+      moreContainer.classList.remove("active");
+      offset = 0;
+      await matchDataApi(abortController);
 
-      fetch(
-        `${API_URL}/matchdetail?accessIds=${accessIds}&matchIds=${[
-          ...new Set(matchIds),
-        ]}`,
-        {
-          method: "GET",
-          signal: abortController.signal,
-        }
-      )
-        .then((res) => res.json())
-        .then((result) => {
-          if (result.message == "No last matches") {
-            totalContainer.innerHTML = "";
-            resultsContainer.parentNode.classList.add("active");
-            resultsContainer.innerHTML = `<div class="alert alert-danger" role="alert">
-                                          최근 ${limitInputValue}경기 중 같이 플레이한 경기를 찾을 수 없습니다.</div>`;
-          } else {
-            const totalData = result.totalData;
-            const matchData = result.matchData;
+      localStorage.setItem(
+        "fo4_hth_last_search",
+        JSON.stringify({
+          first: firstNick,
+          second: secondNick,
+        })
+      );
+      setLastSearch();
+      apiFinish();
+    }
+  }
+}
 
-            totalContainer.classList.add("active");
-            resultsContainer.parentNode.classList.add("active");
+searchBtn.addEventListener("click", () => {
+  search();
+});
 
-            resultsContainer.innerHTML = "";
+function apiFinish() {
+  searchBtn.removeAttribute("disabled");
+  searchBtn.innerHTML = "검색";
+  cancelBtn.classList.remove("api-active");
+}
 
-            totalContainer.innerHTML = `
+const matchDataApi = async (abortController = new AbortController()) => {
+  moreBtn.setAttribute("disabled", true);
+  moreBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> 더보기`;
+  await fetch(
+    `${API_URL}/matchdetail?accessIds=${accessIds}&matchIds=${matchIds[offset]}`,
+    {
+      method: "GET",
+      signal: abortController.signal,
+    }
+  )
+    .then((res) => res.json())
+    .then((result) => {
+      if (result.message == "No last matches") {
+        resultsContainer.innerHTML = `<div class="alert alert-danger" role="alert">
+                                          같이 플레이한 경기를 찾을 수 없습니다.</div>`;
+      } else {
+        totalData.totalMatch += result.totalData.totalMatch;
+        totalData.totalResult[0] += result.totalData.totalResult[0];
+        totalData.totalResult[1] += result.totalData.totalResult[1];
+        totalData.totalResult[2] += result.totalData.totalResult[2];
+        totalData.totalPer = percentage(totalData);
+
+        const matchData = result.matchData;
+
+        totalContainer.innerHTML = `
             <div class="card">
               <div class="card-body">
                 <div class="card-title grid">
@@ -172,19 +199,19 @@ async function search() {
               </div>
             </div>`;
 
-            matchData.map((match) => {
-              resultsContainer.innerHTML += `
+        matchData.map((match) => {
+          resultsContainer.innerHTML += `
               <button type="button" id="${
                 match.id
               }" class="match-btn list-group-item list-group-item-action ${
-                match.matchResult == "승"
-                  ? "win"
-                  : match.matchResult == "무"
-                  ? "draw"
-                  : match.matchResult == "패"
-                  ? "lose"
-                  : ""
-              }" onclick="modal(this)">
+            match.matchResult == "승"
+              ? "win"
+              : match.matchResult == "무"
+              ? "draw"
+              : match.matchResult == "패"
+              ? "lose"
+              : ""
+          }" onclick="modal(this)">
                 <p class="date mb-1">${dateFormat(new Date(match.date))}</p>
                   <div class="grid result ${
                     nickLength <= 8
@@ -211,33 +238,27 @@ async function search() {
                     : ``
                 }
               </button>`;
-            });
-          }
-
-          localStorage.setItem(
-            "fo4_hth_last_search",
-            JSON.stringify({
-              first: firstNick,
-              second: secondNick,
-            })
-          );
-          setLastSearch();
-
-          apiFinish();
         });
-    }
+
+        resultsContainer.parentNode.classList.add("active");
+        totalContainer.classList.add("active");
+      }
+    });
+  moreBtn.removeAttribute("disabled");
+  moreBtn.innerHTML = "더보기";
+
+  for (let i = 0; i < matchBtn.length; i++) {
+    matchBtn[i].classList.remove("hide");
   }
-}
-
-searchBtn.addEventListener("click", () => {
-  search();
-});
-
-function apiFinish() {
-  searchBtn.removeAttribute("disabled");
-  searchBtn.innerHTML = "검색";
-  cancelBtn.classList.remove("api-active");
-}
+  offset += 1;
+  if (matchIds.length >= offset && matchIds[offset - 1].length == 10) {
+    moreContainer.classList.add("active");
+    moreBtn.addEventListener("click", matchDataApi, { once: true });
+  } else {
+    moreContainer.classList.remove("active");
+    moreBtn.removeEventListener("click", matchDataApi, { once: true });
+  }
+};
 
 function modal(e) {
   const id = e.getAttribute("id");
