@@ -101,7 +101,6 @@ async function search() {
     }
 
     if (success) {
-      console.log(matchIds);
       let abortController = new AbortController();
       cancelBtn.addEventListener(
         "click",
@@ -251,7 +250,7 @@ const matchDataApi = async (abortController = new AbortController()) => {
     matchBtn[i].classList.remove("hide");
   }
   offset += 1;
-  if (matchIds.length >= offset && matchIds[offset - 1].length == 10) {
+  if (matchIds.length > offset && matchIds[offset - 1].length == 10) {
     moreContainer.classList.add("active");
     moreBtn.addEventListener("click", matchDataApi, { once: true });
   } else {
