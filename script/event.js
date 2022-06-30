@@ -118,9 +118,9 @@ Array.prototype.division = function (n) {
 // 승률 구하기
 function percentage({ totalMatch, totalResult }) {
   return [
-    Math.round((totalResult[0] / totalMatch) * 100),
-    Math.round((totalResult[1] / totalMatch) * 100),
-    Math.round((totalResult[2] / totalMatch) * 100),
+    ((totalResult[0] / totalMatch) * 100).toFixed(1),
+    ((totalResult[1] / totalMatch) * 100).toFixed(1),
+    ((totalResult[2] / totalMatch) * 100).toFixed(1),
   ];
 }
 
