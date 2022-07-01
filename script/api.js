@@ -1,4 +1,5 @@
-const API_URL = "https://fo4-hth-api.herokuapp.com";
+// const API_URL = "https://fo4-hth-api.herokuapp.com";
+const API_URL = "http://localhost:3000";
 
 const searchBtn = document.getElementById("search-btn");
 const cancelBtn = document.getElementById("cancel-btn");
@@ -309,9 +310,11 @@ function modal(e) {
         if (player.spName != undefined) {
           firstSquad += `<span class="position ${
             i == 0 ? "GK" : i <= 8 ? "DF" : i <= 19 ? "MF" : "FW"
-          }">${position[i]}</span> ${
-            player.spName
-          }&emsp;<span class="badge rounded-pill ${
+          }">${position[i]}</span> ${player.spName} ${
+            player.spGoal > 0
+              ? `<span><i class="fa-solid fa-futbol"></i> ${player.spGoal}</span>`
+              : ""
+          } <span class="badge rounded-pill ${
             player.spRating < 6
               ? "bg-danger"
               : player.spRating < 7
@@ -326,9 +329,11 @@ function modal(e) {
         if (player.spName != undefined) {
           secondSquad += `<span class="position ${
             i == 0 ? "GK" : i <= 8 ? "DF" : i <= 19 ? "MF" : "FW"
-          }">${position[i]}</span> ${
-            player.spName
-          }&emsp;<span class="badge rounded-pill ${
+          }">${position[i]}</span> ${player.spName} ${
+            player.spGoal > 0
+              ? `<span><i class="fa-solid fa-futbol"></i> ${player.spGoal}</span>`
+              : ""
+          } </span> <span class="badge rounded-pill ${
             player.spRating < 6
               ? "bg-danger"
               : player.spRating < 7
