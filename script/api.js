@@ -1,10 +1,10 @@
-// const API_URL = "https://fo4-hth-api.herokuapp.com";
-const API_URL = "http://localhost:3000";
+const API_URL = "https://fo4-hth-api.herokuapp.com";
 
 const searchBtn = document.getElementById("search-btn");
 const cancelBtn = document.getElementById("cancel-btn");
 const totalContainer = document.getElementById("total");
 const resultsContainer = document.getElementById("results");
+const errorContainer = document.getElementById("error");
 const moreContainer = document.getElementById("more");
 const moreBtn = document.getElementById("more-btn");
 
@@ -41,6 +41,8 @@ async function search() {
     searchBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> 검색`;
     cancelBtn.classList.add("api-active");
 
+    errorContainer.classList.remove("active");
+
     let abortController = new AbortController();
     cancelBtn.addEventListener(
       "click",
@@ -57,31 +59,40 @@ async function search() {
         method: "GET",
         signal: abortController.signal,
       }
-    ).then((res) => res.json());
+    )
+      .then((res) => res.json())
+      .catch(() => {
+        totalContainer.innerHTML = "";
+        errorContainer.classList.add("active");
+        errorContainer.innerHTML = `<div class="alert alert-danger" role="alert">
+                                          검색 시간이 초과되었습니다.</div>`;
+      });
 
     if (result) {
       if (result.message == "First user could not found") {
         alert("첫 번째 구단주를 찾을 수 없습니다.");
+        apiFinish();
         success = false;
       } else if (result.message == "Second user could not found") {
         alert("두 번째 구단주를 찾을 수 없습니다.");
+        apiFinish();
         success = false;
       } else if (result.message == "No matches user0") {
         totalContainer.innerHTML = "";
-        resultsContainer.parentNode.classList.add("active");
-        resultsContainer.innerHTML = `<div class="alert alert-danger" role="alert">
+        errorContainer.classList.add("active");
+        errorContainer.innerHTML = `<div class="alert alert-danger" role="alert">
                                           ${result.userInfo.nickname[0]}님의 경기를 찾을 수 없습니다.</div>`;
         success = false;
       } else if (result.message == "No matches user1") {
         totalContainer.innerHTML = "";
-        resultsContainer.parentNode.classList.add("active");
-        resultsContainer.innerHTML = `<div class="alert alert-danger" role="alert">
+        errorContainer.classList.add("active");
+        errorContainer.innerHTML = `<div class="alert alert-danger" role="alert">
                                           ${result.userInfo.nickname[1]}님의 경기를 찾을 수 없습니다.</div>`;
         success = false;
       } else if (result.message == "No last matches") {
         totalContainer.innerHTML = "";
-        resultsContainer.parentNode.classList.add("active");
-        resultsContainer.innerHTML = `<div class="alert alert-danger" role="alert">
+        errorContainer.classList.add("active");
+        errorContainer.innerHTML = `<div class="alert alert-danger" role="alert">
                                           경기를 찾을 수 없습니다.</div>`;
         success = false;
       } else {
@@ -111,7 +122,7 @@ async function search() {
         },
         { once: true }
       );
-      resultsContainer.parentNode.classList.remove("active");
+      resultsContainer.classList.remove("active");
       resultsContainer.innerHTML = "";
       totalContainer.innerHTML = "";
       moreContainer.classList.remove("active");
@@ -126,8 +137,8 @@ async function search() {
         })
       );
       setLastSearch();
-      apiFinish();
     }
+    apiFinish();
   }
 }
 
@@ -142,30 +153,32 @@ function apiFinish() {
 }
 
 const matchDataApi = async (abortController = new AbortController()) => {
-  moreBtn.setAttribute("disabled", true);
-  moreBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> 더보기`;
-  await fetch(
-    `${API_URL}/matchdetail?accessIds=${accessIds}&matchIds=${matchIds[offset]}`,
-    {
-      method: "GET",
-      signal: abortController.signal,
-    }
-  )
-    .then((res) => res.json())
-    .then((result) => {
-      if (result.message == "No last matches") {
-        resultsContainer.innerHTML = `<div class="alert alert-danger" role="alert">
+  if (matchIds.length != 0) {
+    moreBtn.setAttribute("disabled", true);
+    moreBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> 더보기`;
+    await fetch(
+      `${API_URL}/matchdetail?accessIds=${accessIds}&matchIds=${matchIds[offset]}`,
+      {
+        method: "GET",
+        signal: abortController.signal,
+      }
+    )
+      .then((res) => res.json())
+      .then((result) => {
+        if (result.message == "No last matches") {
+          errorContainer.classList.add("active");
+          errorContainer.innerHTML = `<div class="alert alert-danger" role="alert">
                                           같이 플레이한 경기를 찾을 수 없습니다.</div>`;
-      } else {
-        totalData.totalMatch += result.totalData.totalMatch;
-        totalData.totalResult[0] += result.totalData.totalResult[0];
-        totalData.totalResult[1] += result.totalData.totalResult[1];
-        totalData.totalResult[2] += result.totalData.totalResult[2];
-        totalData.totalPer = percentage(totalData);
+        } else {
+          totalData.totalMatch += result.totalData.totalMatch;
+          totalData.totalResult[0] += result.totalData.totalResult[0];
+          totalData.totalResult[1] += result.totalData.totalResult[1];
+          totalData.totalResult[2] += result.totalData.totalResult[2];
+          totalData.totalPer = percentage(totalData);
 
-        const matchData = result.matchData;
+          const matchData = result.matchData;
 
-        totalContainer.innerHTML = `
+          totalContainer.innerHTML = `
             <div class="card">
               <div class="card-body">
                 <div class="card-title grid">
@@ -199,19 +212,19 @@ const matchDataApi = async (abortController = new AbortController()) => {
               </div>
             </div>`;
 
-        matchData.map((match) => {
-          resultsContainer.innerHTML += `
+          matchData.map((match) => {
+            resultsContainer.innerHTML += `
               <button type="button" id="${
                 match.id
               }" class="match-btn list-group-item list-group-item-action ${
-            match.matchResult == "승"
-              ? "win"
-              : match.matchResult == "무"
-              ? "draw"
-              : match.matchResult == "패"
-              ? "lose"
-              : ""
-          }" onclick="modal(this)">
+              match.matchResult == "승"
+                ? "win"
+                : match.matchResult == "무"
+                ? "draw"
+                : match.matchResult == "패"
+                ? "lose"
+                : ""
+            }" onclick="modal(this)">
                 <p class="date mb-1">${dateFormat(new Date(match.date))}</p>
                   <div class="grid result ${
                     nickLength <= 8
@@ -238,25 +251,30 @@ const matchDataApi = async (abortController = new AbortController()) => {
                     : ``
                 }
               </button>`;
-        });
+          });
 
-        resultsContainer.parentNode.classList.add("active");
-        totalContainer.classList.add("active");
-      }
-    });
-  moreBtn.removeAttribute("disabled");
-  moreBtn.innerHTML = "더보기";
+          resultsContainer.classList.add("active");
+          totalContainer.classList.add("active");
+        }
+      });
+    moreBtn.removeAttribute("disabled");
+    moreBtn.innerHTML = "더보기";
 
-  for (let i = 0; i < matchBtn.length; i++) {
-    matchBtn[i].classList.remove("hide");
-  }
-  offset += 1;
-  if (matchIds.length >= offset + 1 && matchIds[offset - 1].length == 10) {
-    moreContainer.classList.add("active");
-    moreBtn.addEventListener("click", matchDataApi, { once: true });
+    for (let i = 0; i < matchBtn.length; i++) {
+      matchBtn[i].classList.remove("hide");
+    }
+    offset += 1;
+    if (matchIds.length >= offset + 1 && matchIds[offset - 1].length == 10) {
+      moreContainer.classList.add("active");
+      moreBtn.addEventListener("click", matchDataApi, { once: true });
+    } else {
+      moreContainer.classList.remove("active");
+      moreBtn.removeEventListener("click", matchDataApi, { once: true });
+    }
   } else {
-    moreContainer.classList.remove("active");
-    moreBtn.removeEventListener("click", matchDataApi, { once: true });
+    errorContainer.classList.add("active");
+    errorContainer.innerHTML = `<div class="alert alert-danger" role="alert">
+    같이 플레이한 경기를 찾을 수 없습니다.</div>`;
   }
 };
 

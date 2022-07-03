@@ -41,10 +41,10 @@
         aria-expanded="false" aria-controls="collapseExample">
         검색 유의사항
       </a>
-      <div style="width: 100%" class="collapse" id="collapseExample">
+      <div style="width: 100%; color: #6c757d;" class="collapse" id="collapseExample">
         <div class="card card-body">
-          <p>몰수승, 몰수패 등 비정상 종료된 경기는 제외됩니다.</p>
-          <p></p>
+          <small>몰수승, 몰수패 등 비정상 종료된 경기는 제외됩니다.</small>
+          <small></small>
         </div>
       </div>
       <button id="search-btn" class="btn btn-primary mt-3" type="button">
@@ -61,6 +61,7 @@
     <div id="results-container" class="container pb-5">
       <div id="results" class="list-group"></div>
       <div id="more"><button id="more-btn" class="btn btn-primary mt-3" type="button">더보기</button></div>
+      <div id="error"></div>
     </div>
 
     <div id="menu-background" onclick="menu()"></div>
