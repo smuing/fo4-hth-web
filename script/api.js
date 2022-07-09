@@ -61,11 +61,13 @@ async function search() {
       }
     )
       .then((res) => res.json())
-      .catch(() => {
-        totalContainer.innerHTML = "";
-        errorContainer.classList.add("active");
-        errorContainer.innerHTML = `<div class="alert alert-danger" role="alert">
-                                          검색 시간이 초과되었습니다.</div>`;
+      .catch((error) => {
+        if (error.message != "The user aborted a request.") {
+          totalContainer.innerHTML = "";
+          errorContainer.classList.add("active");
+          errorContainer.innerHTML = `<div class="alert alert-danger" role="alert">
+                                            검색 시간이 초과되었습니다.</div>`;
+        }
       });
 
     if (result) {
