@@ -1,4 +1,5 @@
-const API_URL = "https://fo4-hth-api.herokuapp.com";
+// const API_URL = "https://fo4-hth-api.herokuapp.com";
+const API_URL = "http://localhost:3000";
 
 const searchBtn = document.getElementById("search-btn");
 const cancelBtn = document.getElementById("cancel-btn");
@@ -21,6 +22,17 @@ var totalData = {
 };
 
 async function search() {
+  firstNick = "";
+  secondNick = "";
+  nickLength = 0;
+  offset = 0;
+  accessIds = [];
+  matchIds = [];
+  totalData = {
+    totalMatch: 0,
+    totalResult: [0, 0, 0],
+    totalPer: [0, 0, 0],
+  };
   const firstInputValue = firstInput.value;
   const secondInputValue = secondInput.value;
 
@@ -103,7 +115,6 @@ async function search() {
         accessIds.push(...result.userInfo.accessIds);
         matchIds.push(...result.matchIds);
         matchIds = matchIds.filter((e, i, a) => a.indexOf(e) !== i);
-        matchIds = matchIds.division(10);
         totalData = {
           totalMatch: 0,
           totalResult: [0, 0, 0],
@@ -128,7 +139,6 @@ async function search() {
       resultsContainer.innerHTML = "";
       totalContainer.innerHTML = "";
       moreContainer.classList.remove("active");
-      offset = 0;
       await matchDataApi(abortController);
 
       localStorage.setItem(
@@ -156,10 +166,12 @@ function apiFinish() {
 
 const matchDataApi = async (abortController = new AbortController()) => {
   if (matchIds.length != 0) {
+    matchIds = matchIds.slice(offset);
+
     moreBtn.setAttribute("disabled", true);
     moreBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> 더보기`;
     await fetch(
-      `${API_URL}/matchdetail?accessIds=${accessIds}&matchIds=${matchIds[offset]}`,
+      `${API_URL}/matchdetail?accessIds=${accessIds}&matchIds=${matchIds}`,
       {
         method: "GET",
         signal: abortController.signal,
@@ -172,6 +184,8 @@ const matchDataApi = async (abortController = new AbortController()) => {
           errorContainer.innerHTML = `<div class="alert alert-danger" role="alert">
                                           같이 플레이한 경기를 찾을 수 없습니다.</div>`;
         } else {
+          offset = result.offset + 1;
+
           totalData.totalMatch += result.totalData.totalMatch;
           totalData.totalResult[0] += result.totalData.totalResult[0];
           totalData.totalResult[1] += result.totalData.totalResult[1];
@@ -265,8 +279,8 @@ const matchDataApi = async (abortController = new AbortController()) => {
     for (let i = 0; i < matchBtn.length; i++) {
       matchBtn[i].classList.remove("hide");
     }
-    offset += 1;
-    if (matchIds.length >= offset + 1 && matchIds[offset - 1].length == 10) {
+
+    if (matchIds.length > 10) {
       moreContainer.classList.add("active");
       moreBtn.addEventListener("click", matchDataApi, { once: true });
     } else {
