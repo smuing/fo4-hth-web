@@ -269,6 +269,11 @@ const matchDataApi = async (abortController = new AbortController()) => {
                     ? `<small class="shoot-out">(Pen ${match.firstShootOutGoal} - ${match.secondShootOutGoal})</small>`
                     : ``
                 }
+                ${
+                  match.abnormalEnd
+                    ? `<small class="shoot-out">몰수${match.matchResult}</small>`
+                    : ``
+                }
               </button>`;
           });
 
