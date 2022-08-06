@@ -37,6 +37,12 @@
       <input type="text" id="first-input" class="form-control mb-1" placeholder="구단주명" />
       <span class="mb-1">VS</span>
       <input type="text" id="second-input" class="form-control mb-2" placeholder="구단주명" />
+      <div class="form-check" style="width: 100%;">
+        <input class="form-check-input" type="checkbox" id="abnormalGame">
+        <label class="form-check-label" for="abnormalGame">
+          몰수승, 몰수패 포함
+        </label>
+      </div>
       <a class="search-setting-btn" data-bs-toggle="collapse" href="#collapseExample" role="button"
         aria-expanded="false" aria-controls="collapseExample">
         검색 유의사항
@@ -44,8 +50,7 @@
       <div style="width: 100%; color: #6c757d;" class="collapse" id="collapseExample">
         <div class="card card-body">
           <ul style="padding-left: 1rem; margin-bottom: 0;">
-            <li><small>몰수승, 몰수패 등 비정상 종료된 경기는 제외됩니다.</small></li>
-            <li><small>서버 요청 시간제한으로 최근 200경기 중에서 같이 한 경기가<br>검색됩니다.</small></li>
+            <li><small>서버 요청 시간제한으로 최근 200경기 중에서 같이 한 경기가 검색됩니다.</small></li>
           </ul>
         </div>
       </div>

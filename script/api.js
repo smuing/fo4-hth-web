@@ -1,5 +1,4 @@
-// const API_URL = "https://fo4-hth-api.herokuapp.com";
-const API_URL = "http://localhost:3000";
+const API_URL = "https://fo4-hth-api.herokuapp.com";
 
 const searchBtn = document.getElementById("search-btn");
 const cancelBtn = document.getElementById("cancel-btn");
@@ -21,6 +20,8 @@ var totalData = {
   totalPer: [0, 0, 0],
 };
 
+var abnormalGame = false;
+
 async function search() {
   firstNick = "";
   secondNick = "";
@@ -35,6 +36,7 @@ async function search() {
   };
   const firstInputValue = firstInput.value;
   const secondInputValue = secondInput.value;
+  abnormalGame = abnormalGameInput.checked;
 
   const firstInputByte = firstInputValue.getBytes();
   const secondInputByte = secondInputValue.getBytes();
@@ -146,6 +148,7 @@ async function search() {
         JSON.stringify({
           first: firstNick,
           second: secondNick,
+          abnormalGame,
         })
       );
       setLastSearch();
@@ -171,7 +174,7 @@ const matchDataApi = async (abortController = new AbortController()) => {
     moreBtn.setAttribute("disabled", true);
     moreBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> 더보기`;
     await fetch(
-      `${API_URL}/matchdetail?accessIds=${accessIds}&matchIds=${matchIds}`,
+      `${API_URL}/matchdetail?accessIds=${accessIds}&matchIds=${matchIds}&abnormalGame=${abnormalGame}`,
       {
         method: "GET",
         signal: abortController.signal,

@@ -5,7 +5,7 @@ const lastSearchContainer = document.getElementById("last-search");
 let lastSearch = JSON.parse(localStorage.getItem("fo4_hth_last_search"));
 const firstInput = document.getElementById("first-input");
 const secondInput = document.getElementById("second-input");
-const limitInput = document.getElementById("limit-input");
+const abnormalGameInput = document.getElementById("abnormalGame");
 const topBtn = document.getElementById("top-btn");
 const modalContent = document.getElementById("modal-content");
 const filterBtn = document.getElementsByClassName("filter-btn");
@@ -35,6 +35,7 @@ lastSearchContainer.addEventListener("click", () => {
   if (lastSearch !== null) {
     firstInput.value = lastSearch.first;
     secondInput.value = lastSearch.second;
+    abnormalGameInput.checked = lastSearch.abnormalGame;
     menu();
     search();
   }
