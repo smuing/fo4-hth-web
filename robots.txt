@@ -1,0 +1,3 @@
+ User-agent: *
+ Allow: /
+ Sitemap: https://smuing.github.io/fo4_hth/sitemap.xml
