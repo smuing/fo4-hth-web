@@ -39,7 +39,7 @@
       "density": "4.0"
     }
   ],
-  "start_url": "/fo4_hth",
+  "start_url": "/",
   "background_color": "#fff",
   "display": "standalone",
   "orientation": "portrait"
