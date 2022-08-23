@@ -4,6 +4,8 @@ body {
 
 .wrapper {
   position: relative;
+  display: flex;
+  flex-direction: column;
   max-width: 480px;
   min-width: 280px;
   height: 100vh;
@@ -178,6 +180,17 @@ footer {
 footer br {
   display: none;
 }
+#main-footer {
+  position: relative;
+  flex: 1;
+}
+#main-footer > span {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  z-index: 1;
+}
 
 #menu-background {
   display: none;
@@ -187,7 +200,7 @@ footer br {
   width: 100%;
   height: 100%;
   background-color: rgb(0 0 0 / 30%);
-  z-index: 1;
+  z-index: 2;
 }
 #menu-container {
   position: absolute;
@@ -199,7 +212,7 @@ footer br {
   background-color: #ffffff;
   transform: translateX(-1000px);
   transition: 0.4s;
-  z-index: 1;
+  z-index: 3;
 }
 #menu-background.active {
   display: block;
