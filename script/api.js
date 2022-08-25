@@ -66,7 +66,6 @@ async function search() {
       },
       { once: true }
     );
-
     const result = await fetch(
       `${API_URL}/matchids?first=${firstInputValue}&second=${secondInputValue}`,
       {
@@ -77,6 +76,10 @@ async function search() {
       .then((res) => res.json())
       .catch((error) => {
         if (error.message != "The user aborted a request.") {
+          resultsContainer.classList.remove("active");
+          resultsContainer.innerHTML = "";
+          totalContainer.innerHTML = "";
+          moreContainer.classList.remove("active");
           totalContainer.innerHTML = "";
           errorContainer.classList.add("active");
           errorContainer.innerHTML = `<div class="alert alert-danger" role="alert">
@@ -85,6 +88,10 @@ async function search() {
       });
 
     if (result) {
+      resultsContainer.classList.remove("active");
+      resultsContainer.innerHTML = "";
+      totalContainer.innerHTML = "";
+      moreContainer.classList.remove("active");
       if (result.message == "First user could not found") {
         alert("첫 번째 구단주를 찾을 수 없습니다.");
         apiFinish();
@@ -95,21 +102,18 @@ async function search() {
         success = false;
       } else if (result.message == "No matches user0") {
         totalContainer.innerHTML = "";
-        resultsContainer.innerHTML = "";
         errorContainer.classList.add("active");
         errorContainer.innerHTML = `<div class="alert alert-danger" role="alert">
                                           ${result.userInfo.nickname[0]}님의 경기를 찾을 수 없습니다.</div>`;
         success = false;
       } else if (result.message == "No matches user1") {
         totalContainer.innerHTML = "";
-        resultsContainer.innerHTML = "";
         errorContainer.classList.add("active");
         errorContainer.innerHTML = `<div class="alert alert-danger" role="alert">
                                           ${result.userInfo.nickname[1]}님의 경기를 찾을 수 없습니다.</div>`;
         success = false;
       } else if (result.message == "No last matches") {
         totalContainer.innerHTML = "";
-        resultsContainer.innerHTML = "";
         errorContainer.classList.add("active");
         errorContainer.innerHTML = `<div class="alert alert-danger" role="alert">
                                           경기를 찾을 수 없습니다.</div>`;
@@ -140,10 +144,7 @@ async function search() {
         },
         { once: true }
       );
-      resultsContainer.classList.remove("active");
-      resultsContainer.innerHTML = "";
-      totalContainer.innerHTML = "";
-      moreContainer.classList.remove("active");
+
       await matchDataApi(abortController);
 
       localStorage.setItem(
