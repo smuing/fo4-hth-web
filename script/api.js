@@ -1,4 +1,4 @@
-const API_URL = "http://138.2.124.126";
+const API_URL = "https://fo4-hth-api.herokuapp.com";
 
 const searchBtn = document.getElementById("search-btn");
 const cancelBtn = document.getElementById("cancel-btn");
