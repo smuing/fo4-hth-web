@@ -1,5 +1,6 @@
 import Footer from "@/components/Footer";
 import Menu from "@/components/Menu";
+import MatchList from "@/components/result/MatchList";
 import Total from "@/components/result/Total";
 import styles from "@/styles/Home.module.css";
 
@@ -26,6 +27,7 @@ export default function Home() {
       </div>
       <div>
         <Total />
+        <MatchList />
       </div>
 
       <Footer />
