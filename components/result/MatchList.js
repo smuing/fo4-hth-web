@@ -13,17 +13,44 @@ export default function MatchList() {
           </div>
         </button>
       </div>
-
       <div>
         <button className="btn btn-primary mt-3" type="button" style={{ width: "100%" }}>
           더보기
         </button>
       </div>
 
+      <div className="modal-container">
+        <div className="container">
+          <div className="card">
+            <div className="card-header">
+              <span>상세 정보</span>
+              <button type="button" className="btn-close" aria-label="Close"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <style jsx>{`
         .date {
           color: #6c757d;
           font-size: 12px;
+        }
+        .modal-container {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgb(0 0 0 / 30%);
+          z-index: 2;
+        }
+        .card {
+          margin: 42px auto;
+        }
+        .card-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
         }
       `}</style>
     </div>

@@ -5,6 +5,7 @@ export default function Footer() {
       <style jsx>{`
         footer {
           position: absolute;
+          left: 0;
           bottom: 0;
           width: 100%;
           text-align: center;
